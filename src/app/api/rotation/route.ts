@@ -1,4 +1,5 @@
 import { ChampionRotation } from "@/types/ChampionRotaion";
+import getChampionRotation from "@/utils/serverApi";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -7,20 +8,9 @@ export async function GET() {
   }
 
   try {
-    const res = await fetch(
-      "https://kr.api.riotgames.com/lol/platform/v3/champion-rotations",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Riot-Token": process.env.RIOT_API_KEY as string,
-        },
-      }
-    );
-
-    const data: ChampionRotation = await res.json();
-
-    return NextResponse.json({ data });
-  } catch (e) {
-    return e;
+    const res = await getChampionRotation();
+    return NextResponse.json(res);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message, status: 500 });
   }
 }
